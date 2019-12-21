@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -18,3 +21,16 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
+    //Admin login infos
+    Route::get('/', 'AdminController@index');
+    Route::get('home', 'AdminController@index');
+    Route::get('login', 'Auth\LoginController@showLoginForm')->name('admin.login');
+    Route::post('login', 'Auth\LoginController@login');
+    Route::post('logout', 'Auth\LoginController@logout')->name('admin.logout');
+    Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('admin.password.email');
+    Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('admin.password.request');
+    Route::post('password/reset', 'Auth\ResetPasswordController@reset')->name('admin.password.update');
+    Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('admin.password.reset');
+});
