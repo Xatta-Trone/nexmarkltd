@@ -33,4 +33,9 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
     Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('admin.password.request');
     Route::post('password/reset', 'Auth\ResetPasswordController@reset')->name('admin.password.update');
     Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('admin.password.reset');
+
+    //category
+
+    Route::resource('categories', 'CategoriesController');
+    Route::get('categoriesajax', 'CategoriesController@ajaxDataTable')->name('categories.ajax');
 });
