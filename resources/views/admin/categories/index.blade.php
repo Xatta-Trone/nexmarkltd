@@ -47,6 +47,7 @@
                         <th>Name</th>
                         <th>Slug</th>
                         <th>Status</th>
+                        <th>AddedOn</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -85,6 +86,7 @@
                         <th>Name</th>
                         <th>Slug</th>
                         <th>Status</th>
+                        <th>AddedOn</th>
                         <th>Action</th>
                     </tr>
                 </tfoot>
@@ -121,6 +123,7 @@
           { data: 'name', name: 'name' },
           { data: 'slug', name: 'slug' },
           { data: 'status', name: 'status' },
+          { data: 'created_at', name: 'created_at' },
           {data: 'action', name: 'action', orderable: false, searchable: false}
         ],
         "order": [[ 0, "desc" ]]

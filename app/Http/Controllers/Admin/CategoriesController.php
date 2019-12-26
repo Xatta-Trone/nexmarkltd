@@ -140,7 +140,7 @@ class CategoriesController extends Controller
             
             return $col_to_show;
         })
-        ->addColumn('status', function ($category) {
+        ->editColumn('status', function ($category) {
             $status_col = '';
             if ($category->status == 1) {
                 $status_col .=  '<span class="label label-success">Active</span>';
@@ -149,6 +149,17 @@ class CategoriesController extends Controller
             }
 
             return $status_col;
+        })
+        ->editColumn('created_at', function ($category) {
+            // $status_col = '';
+            // if ($category->status == 1) {
+            //     $status_col .=  '<span class="label label-success">Active</span>';
+            // } else {
+            //     $status_col .=  '<span class="label label-danger">Inactive</span>';
+            // }
+            return $category->created_at->diffForHumans();
+
+            // return $status_col;
         })
         ->rawColumns(['action','status'])
         

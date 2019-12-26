@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -16,6 +17,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::get('call/{callMethod}', function ($callMethod) {
+    return Artisan::call($callMethod);
 });
 
 Auth::routes();
@@ -35,7 +40,11 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
     Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('admin.password.reset');
 
     //category
-
     Route::resource('categories', 'CategoriesController');
     Route::get('categoriesajax', 'CategoriesController@ajaxDataTable')->name('categories.ajax');
+
+    //shops
+    Route::resource('shops', 'ShopsController');
+    Route::get('shopsajax', 'ShopsController@ajaxDataTable')->name('shops.ajax');
+    Route::get('shop/tlc/{id}', 'ShopsController@previewFile')->name('shops.previewfile');
 });
