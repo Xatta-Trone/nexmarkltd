@@ -51,6 +51,45 @@
             </ul>
         </li>
 
+        <li class="treeview">
+            <a href="#">
+                <i class="fa fa-dashboard"></i> <span>Admins</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu">
+                <li><a href="{{ route('admins.index') }}"><i class="fa fa-circle-o"></i>All</a></li>
+                <li><a href="{{ route('admins.create') }}"><i class="fa fa-circle-o"></i> Create</a></li>
+            </ul>
+        </li>
+
+        <li class="treeview">
+            <a href="#">
+                <i class="fa fa-dashboard"></i> <span>Permission</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu">
+                <li><a href="{{ route('permissions.index') }}"><i class="fa fa-circle-o"></i>All</a></li>
+                <li><a href="{{ route('permissions.create') }}"><i class="fa fa-circle-o"></i> Create</a></li>
+            </ul>
+        </li>
+
+        <li class="treeview">
+            <a href="#">
+                <i class="fa fa-dashboard"></i> <span>Roles</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu">
+                <li><a href="{{ route('roles.index') }}"><i class="fa fa-circle-o"></i>All</a></li>
+                <li><a href="{{ route('roles.create') }}"><i class="fa fa-circle-o"></i> Create</a></li>
+            </ul>
+        </li>
+
 
 
 

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Model\Admin\Permission;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -26,5 +27,21 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         //
+
+        foreach ($this->getPermissions() as $permission) {
+            Gate::before(function ($admin) {
+                if ($admin->email == 'xatta@admin.com') {
+                    return true;
+                }
+            });
+
+            Gate::define($permission->name, function ($admin) use ($permission) {
+                return $admin->hasRole($permission->roles);
+            });
+        }
+    }
+    protected function getPermissions()
+    {
+        return Permission::with('roles')->get();
     }
 }

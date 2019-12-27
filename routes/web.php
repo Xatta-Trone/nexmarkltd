@@ -29,8 +29,8 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
     //Admin login infos
-    Route::get('/', 'AdminController@index');
-    Route::get('home', 'AdminController@index');
+    Route::get('/', 'HomeController@index');
+    Route::get('home', 'HomeController@index');
     Route::get('login', 'Auth\LoginController@showLoginForm')->name('admin.login');
     Route::post('login', 'Auth\LoginController@login');
     Route::post('logout', 'Auth\LoginController@logout')->name('admin.logout');
@@ -47,4 +47,17 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
     Route::resource('shops', 'ShopsController');
     Route::get('shopsajax', 'ShopsController@ajaxDataTable')->name('shops.ajax');
     Route::get('shop/tlc/{id}', 'ShopsController@previewFile')->name('shops.previewfile');
+
+    //admins
+    Route::resource('admins', 'AdminController');
+    Route::get('adminsajax', 'AdminController@ajaxDataTable')->name('admins.ajax');
+    Route::post('admins/checkemail', 'AdminController@checkEmail')->name('admins.checkemail');
+
+    //permissions
+    Route::resource('permissions', 'PermissionController');
+    Route::get('permissionsajax', 'PermissionController@ajaxDataTable')->name('permissions.ajax');
+
+    //roles
+    Route::resource('roles', 'RolesController');
+    Route::get('rolesajax', 'RolesController@ajaxDataTable')->name('roles.ajax');
 });
