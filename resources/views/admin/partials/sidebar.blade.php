@@ -23,7 +23,7 @@
     <!-- sidebar menu: : style can be found in sidebar.less -->
     <ul class="sidebar-menu" data-widget="tree">
         <li class="header">MAIN NAVIGATION</li>
-
+        <li><a href="{{ route('admin.home') }}"><i class="fa fa-circle-o text-aqua"></i>Dashboard</a></li>
 
         <li class="treeview">
             <a href="#">
@@ -87,6 +87,32 @@
             <ul class="treeview-menu">
                 <li><a href="{{ route('roles.index') }}"><i class="fa fa-circle-o"></i>All</a></li>
                 <li><a href="{{ route('roles.create') }}"><i class="fa fa-circle-o"></i> Create</a></li>
+            </ul>
+        </li>
+
+        <li class="treeview">
+            <a href="#">
+                <i class="fa fa-dashboard"></i> <span>Products</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu">
+                <li><a href="{{ route('products.index') }}"><i class="fa fa-circle-o"></i>All</a></li>
+                <li><a href="{{ route('products.create') }}"><i class="fa fa-circle-o"></i> Add</a></li>
+            </ul>
+        </li>
+
+        <li class="treeview">
+            <a href="#">
+                <i class="fa fa-dashboard"></i> <span>Orders</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu">
+                <li><a href="{{ route('orders.index') }}"><i class="fa fa-circle-o"></i>All</a></li>
+                <li><a href="{{ route('orders.create') }}"><i class="fa fa-circle-o"></i> Add</a></li>
             </ul>
         </li>
 

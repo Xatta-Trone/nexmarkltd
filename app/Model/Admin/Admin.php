@@ -56,4 +56,9 @@ class Admin extends Authenticatable
     {
         return $this->belongsToMany(Role::class);
     }
+
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
 }

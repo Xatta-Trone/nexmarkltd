@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Model\User\User;
 use App\Model\Admin\Shop;
+use App\Mail\NewShopAdded;
 use App\Model\Admin\Admin;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
 use Yajra\DataTables\Facades\DataTables;
@@ -196,6 +200,11 @@ class ShopsController extends Controller
                     '.csrf_field().'
                     '.method_field('DELETE').'
                   </form>';
+            if ($shop->status == 0) {
+                $col_to_show .= '  <a onclick="return confirm(\'Are you sure?\')"  href="'.route('shops.approve', $shop->id).'" class="btn btn-primary"><i class="fa fa-check-square-o"></i></a>';
+            }
+
+
             $col_to_show .= '  <a  href="'.route('shops.previewfile', $shop->id).'" class="btn btn-primary"><i class="fa fa-eye"></i></a>';
             
             return $col_to_show;
@@ -217,7 +226,7 @@ class ShopsController extends Controller
             return "<a href=".$shop->website_url.">".$shop->website_url."</a>";
         })
         ->editColumn('approved_by', function ($shop) {
-            return Admin::find($shop->approved_by)->name;
+            return ($shop->approved_by != null) ? Admin::find($shop->approved_by)->name : 'not approved';
         })
         ->editColumn('created_at', function ($shop) {
             return $shop->created_at->diffForHumans();
@@ -235,5 +244,37 @@ class ShopsController extends Controller
 
         dd($fileurl);
         return response()->file($fileurl);
+    }
+
+    public function approve($shopId)
+    {
+        $shop = Shop::find($shopId);
+
+        $shop->status = 1;
+        $shop->approved_by = auth()->user()->id;
+        $shop->save();
+
+        $this->registerUser($shop);
+        return redirect(route('shops.index'))->with('success', 'shop approved');
+    }
+    public function registerUser($shop)
+    {
+        // dd($shop);
+        $pass = Str::random(8);
+
+        $user = new User;
+        $user->name = $shop->name;
+        $user->email = $shop->email;
+        $user->password = bcrypt($pass);
+        // $user->status = 1;
+        $user->save();
+
+        $newShopUser = $shop;
+        $newShopUser['password'] = $pass;
+        $newShopUser = (object) $newShopUser;
+
+        // dd($newShopUser);
+
+        Mail::to($shop->email)->send(new NewShopAdded($newShopUser));
     }
 }

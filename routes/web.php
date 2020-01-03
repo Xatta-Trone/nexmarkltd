@@ -15,22 +15,34 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+Route::get('/old', function () {
     return view('welcome');
 });
+
+Route::get('/', 'PagesController@home')->name('index');
+Route::get('/register', 'PagesController@register')->name('register');
+Route::get('/submitstatus', 'PagesController@submitstatus')->name('submitstatus');
+
+Route::group(['namespace' => 'User'], function () {
+    Route::post('/storeshopdata', 'ShopController@storeShopInfo')->name('shop.submit');
+    Route::post('/validatetradelicense', 'ShopController@validatetradelicense')->name('shop.validatetradelicense');
+});
+
+
+
 
 Route::get('call/{callMethod}', function ($callMethod) {
     return Artisan::call($callMethod);
 });
 
-Auth::routes();
+Auth::routes(['register' => false]);
 
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
     //Admin login infos
-    Route::get('/', 'HomeController@index');
-    Route::get('home', 'HomeController@index');
+    Route::get('/', 'HomeController@index')->name('admin.home');
+    Route::get('home', 'HomeController@index')->name('admin.home');
     Route::get('login', 'Auth\LoginController@showLoginForm')->name('admin.login');
     Route::post('login', 'Auth\LoginController@login');
     Route::post('logout', 'Auth\LoginController@logout')->name('admin.logout');
@@ -47,6 +59,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
     Route::resource('shops', 'ShopsController');
     Route::get('shopsajax', 'ShopsController@ajaxDataTable')->name('shops.ajax');
     Route::get('shop/tlc/{id}', 'ShopsController@previewFile')->name('shops.previewfile');
+    Route::get('shop/approve/{id}', 'ShopsController@approve')->name('shops.approve');
 
     //admins
     Route::resource('admins', 'AdminController');
@@ -60,4 +73,14 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
     //roles
     Route::resource('roles', 'RolesController');
     Route::get('rolesajax', 'RolesController@ajaxDataTable')->name('roles.ajax');
+
+    //products
+    Route::resource('products', 'ProductsController');
+    Route::get('productsajax', 'ProductsController@ajaxDataTable')->name('products.ajax');
+    Route::post('checkproduct', 'ProductsController@checkproduct')->name('products.check');
+    Route::post('getSingleProduct', 'ProductsController@getSingleProduct')->name('products.getSingleProduct');
+
+    //orders
+    Route::resource('orders', 'OrderController');
+    Route::get('ordersajax', 'OrderController@ajaxDataTable')->name('orders.ajax');
 });
