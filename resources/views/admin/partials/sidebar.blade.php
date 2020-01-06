@@ -100,6 +100,7 @@
             <ul class="treeview-menu">
                 <li><a href="{{ route('products.index') }}"><i class="fa fa-circle-o"></i>All</a></li>
                 <li><a href="{{ route('products.create') }}"><i class="fa fa-circle-o"></i> Add</a></li>
+                <li><a href="{{ route('products.excell') }}"><i class="fa fa-circle-o"></i> Import</a></li>
             </ul>
         </li>
 

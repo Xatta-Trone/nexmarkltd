@@ -16,4 +16,15 @@ class Category extends Model
     {
         return $this->belongsToMany(Product::class);
     }
+
+    public function parent()
+    {
+        return $this->belongsTo(static::class, 'parent_category');
+    }
+    
+    //each category might have multiple children
+    public function children()
+    {
+        return $this->hasMany(static::class, 'parent_category')->orderBy('name', 'asc');
+    }
 }

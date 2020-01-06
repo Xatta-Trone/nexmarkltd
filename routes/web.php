@@ -1,5 +1,6 @@
 <?php
 
+use App\Model\Admin\Role;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -20,6 +21,7 @@ Route::get('/old', function () {
 });
 
 Route::get('/', 'PagesController@home')->name('index');
+Route::get('/shop', 'PagesController@shoppage')->name('shop');
 Route::get('/register', 'PagesController@register')->name('register');
 Route::get('/submitstatus', 'PagesController@submitstatus')->name('submitstatus');
 
@@ -79,8 +81,15 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
     Route::get('productsajax', 'ProductsController@ajaxDataTable')->name('products.ajax');
     Route::post('checkproduct', 'ProductsController@checkproduct')->name('products.check');
     Route::post('getSingleProduct', 'ProductsController@getSingleProduct')->name('products.getSingleProduct');
+    Route::get('product/import', 'ProductsController@excellImportView')->name('products.excell');
+    Route::post('product/import', 'ProductsController@addexcelData')->name('products.excell.import');
+
 
     //orders
     Route::resource('orders', 'OrderController');
     Route::get('ordersajax', 'OrderController@ajaxDataTable')->name('orders.ajax');
 });
+
+
+Route::get('import', 'TestController@view');
+Route::post('import', 'TestController@import')->name('excel.post');

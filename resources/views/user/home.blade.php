@@ -56,7 +56,6 @@
     </div>
 </section>
 <!-- End banner Area -->
-
 <!-- start features Area -->
 <section class="features-area section_gap">
     <div class="container">
@@ -977,5 +976,13 @@
         </div>
     </div>
 </section>
+<div>
+    <h4>example</h4>
+    <example-component />
+
+</div>
 <!-- End related-product Area -->
+@endsection
+@section('extra_footer')
+{{-- <script src="{{ asset('js/app.js')}}"></script> --}}
 @endsection

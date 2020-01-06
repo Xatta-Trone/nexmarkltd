@@ -103,6 +103,7 @@
 </script>
 <script src="{{ asset('user_asset/js/gmaps.min.js')}}"></script>
 <script src="{{ asset('user_asset/js/main.js')}}"></script>
+<script src="{{ asset('js/app.js')}}"></script>
 
 @section('extra_footer')
 

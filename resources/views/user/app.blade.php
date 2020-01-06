@@ -12,8 +12,11 @@
     @include('user.partials.nav')
 
     <!-- End Header Area -->
-    @section('main_content')
-    @show
+    <div id="app">
+        @section('main_content')
+        @show
+    </div>
+
 
 
     <!-- start footer Area -->

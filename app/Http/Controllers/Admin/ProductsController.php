@@ -7,8 +7,11 @@ use Illuminate\Support\Str;
 use App\Model\Admin\Product;
 use Illuminate\Http\Request;
 use App\Model\Admin\Category;
+use App\Imports\ProductsImport;
 use App\Model\Admin\Permission;
 use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
+use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -68,10 +71,21 @@ class ProductsController extends Controller
 
         if ($request->hasFile('image')) {
             //retrive new file data
+            // $extension          = $request->file('image')->getClientOriginalExtension();
+            // $NewFileToStore     = $productSlug.'.'.$extension;
+            // //save new data
+            // $request->file('image')->storeAs('public/products/', $NewFileToStore);
+
+            $originalImage      =  $request->file('image');
+            $thumbnailImage     = Image::make($originalImage);
             $extension          = $request->file('image')->getClientOriginalExtension();
             $NewFileToStore     = $productSlug.'.'.$extension;
-            //save new data
-            $request->file('image')->storeAs('public/products/', $NewFileToStore);
+
+            $thumbnailImage->save(public_path().'/storage/products/'.$NewFileToStore);
+            $thumbnailImage->resize(250, null, function ($constraint) {
+                $constraint->aspectRatio();
+            });
+            $thumbnailImage->save(public_path().'/storage/thumbnail/'.$NewFileToStore);
         } else {
             $NewFileToStore     = 'noa.png';
         }
@@ -128,6 +142,7 @@ class ProductsController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // dd(storage_path())
         $this->validate($request, [
             'name'=>'required',
             'price'=>'required',
@@ -149,10 +164,19 @@ class ProductsController extends Controller
                 Storage::delete('public/products/'.$product->image);
             }
             //retrive new file data
+            $originalImage      =  $request->file('image');
+            $thumbnailImage        = Image::make($originalImage);
             $extension          = $request->file('image')->getClientOriginalExtension();
             $NewFileToStore     = $productSlug.'.'.$extension;
-            //save new data
-            $request->file('image')->storeAs('public/products/', $NewFileToStore);
+
+            $thumbnailImage->save(public_path().'/storage/products/'.$NewFileToStore);
+            $thumbnailImage->resize(250, null, function ($constraint) {
+                $constraint->aspectRatio();
+            });
+            $thumbnailImage->save(public_path().'/storage/thumbnail/'.$NewFileToStore);
+
+
+        // $request->file('image')->storeAs('public/products/', $NewFileToStore);
         } else {
             $NewFileToStore     = $product->image;
         }
@@ -192,6 +216,17 @@ class ProductsController extends Controller
         $product->delete();
         
         return redirect(route('products.index'))->with('success', 'successfully deleted');
+    }
+
+    public function excellImportView()
+    {
+        return view('admin.products.excell');
+    }
+
+    public function addexcelData()
+    {
+        Excel::import(new ProductsImport, request()->file('products'));
+        return redirect(route('products.index'))->with('success', 'successfully imported');
     }
 
     public function ajaxDataTable()
