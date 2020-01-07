@@ -62,17 +62,30 @@
             <div class="sidebar-categories">
                 <div class="head">Categories</div>
                 <ul class="main-categories">
+                    <li class="main-nav-list">
+                        <a href="{{ route('shop') }}">
+                            <span class="lnr lnr-arrow-right"></span>
+                            All products
+
+                        </a>
+                    </li>
 
                     @foreach ($categories as $category)
 
-                    <li class="main-nav-list"><a data-toggle="collapse" href="#{{$category->slug}}"
-                            aria-expanded="false" aria-controls="{{$category->slug}}"><span
-                                class="lnr lnr-arrow-right"></span>{{ $category->name }}</a>
+                    <li class="main-nav-list">
+                        <a data-toggle="collapse" href="#{{$category->slug}}" aria-expanded="false"
+                            aria-controls="{{$category->slug}}">
+                            <span class="lnr lnr-arrow-right"></span>
+                            {{ $category->name }}
+
+                        </a>
                         <ul class="collapse" id="{{$category->slug}}" data-toggle="collapse" aria-expanded="false"
                             aria-controls="{{$category->slug}}">
 
                             @foreach ($category->children as $sub_category)
-                            <li class="main-nav-list child"><a href="#">{{ $sub_category->name }}</a>
+                            <li class="main-nav-list child">
+                                <a
+                                    href="{{ request()->fullUrlWithQuery(['cat' => $sub_category->slug]) }}">{{ $sub_category->name }}</a>
                             </li>
                             @endforeach
 
@@ -87,23 +100,40 @@
         </div>
         <div class="col-xl-9 col-lg-8 col-md-7">
             <!-- Start Filter Bar -->
-            <div class="filter-bar d-flex flex-wrap align-items-center">
+            @if (request()->get('cat') != null || request()->get('query') != null)
+            <div class="filter-bar py-3 d-flex flex-wrap align-items-center">
 
-                <div class="sorting mr-auto">
+
+                <span class="text-white">Showing products for
+                    <strong>{{ request()->get('cat')}}{{ request()->get('query') }}</strong> </span>
+
+
+
+                {{-- <div class="sorting mr-auto">
                     <select>
                         <option value="1">Show 12</option>
                         <option value="1">Show 12</option>
                         <option value="1">Show 12</option>
                     </select>
-                </div>
+                </div> --}}
 
             </div>
+            @endif
             <!-- End Filter Bar -->
 
 
             <!-- Start Best Seller -->
             <section class="lattest-product-area pb-40 category-list">
                 <div class="row">
+
+
+
+                    @if($products->count() == 0)
+                    <div class="col-12 text-center py-3">
+                        <h2>No product found</h2>
+                    </div>
+
+                    @endif
 
                     @foreach ($products as $product)
                     <div class="col-lg-4 col-md-6">
@@ -118,7 +148,7 @@
                                     </span>
 
                                     <h6>{{sprintf("%0.2f",$product->price)}}</h6>
-                                    <h6>{{ $product->price }}</h6>
+                                    {{-- <h6>{{ $product->price }}</h6> --}}
                                 </div>
                                 <div class="prd-bottom">
 
@@ -146,18 +176,7 @@
                 </div>
             </section>
             <!-- End Best Seller -->
-            <!-- Start Filter Bar -->
-            <div class="filter-bar d-flex flex-wrap align-items-center">
-                <div class="sorting mr-auto">
-                    <select>
-                        <option value="1">Show 12</option>
-                        <option value="1">Show 12</option>
-                        <option value="1">Show 12</option>
-                    </select>
-                </div>
 
-            </div>
-            <!-- End Filter Bar -->
         </div>
     </div>
 </div>
