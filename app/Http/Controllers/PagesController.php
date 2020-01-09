@@ -39,7 +39,7 @@ class PagesController extends Controller
         // $category = Input::get('cat');
         // dd(request()->get('cat'));
 
-        $categories = Category::with('children')->where('status', 1)->where('parent_category', null)->orderBy('name', 'asc')->get()->toJSON();
+        // $categories = Category::with('children')->where('status', 1)->where('parent_category', null)->orderBy('name', 'asc')->get()->toJSON();
         // $products = Product::with('categories')->orderBy('id', 'desc')->whereHas()->limit(21)->get();
 
         // if (request()->get('cat') != null) {
@@ -55,6 +55,6 @@ class PagesController extends Controller
 
         
         // dd($products->toArray());
-        return view('user.shop', compact('categories'));
+        return view('user.shop');
     }
 }

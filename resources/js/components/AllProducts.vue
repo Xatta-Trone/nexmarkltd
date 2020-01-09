@@ -163,7 +163,8 @@ export default {
             },
             queryType: "general",
             queryString: "",
-            filterCategory: ""
+            filterCategory: "",
+            categories: []
         };
     },
     computed: {
@@ -172,11 +173,13 @@ export default {
         }
     },
     props: {
-        categories: {
-            type: Array
-        }
+        // categories: {
+        //     type: Array
+        // }
     },
-    created: function() {},
+    created: function() {
+        this.getCategories();
+    },
     components: {
         VLazyImage,
         InfiniteLoading
@@ -186,6 +189,12 @@ export default {
         // this.fetchProducts();
     },
     methods: {
+        getCategories() {
+            axios.get("/api/categories").then(res => {
+                // console.log(res.data.data);
+                this.categories = res.data.data;
+            });
+        },
         increment() {
             this.$store.commit("increment");
         },

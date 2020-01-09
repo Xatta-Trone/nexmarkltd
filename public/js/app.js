@@ -2014,7 +2014,8 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       },
       queryType: "general",
       queryString: "",
-      filterCategory: ""
+      filterCategory: "",
+      categories: []
     };
   },
   computed: {
@@ -2022,12 +2023,13 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       return this.$store.state.count;
     }
   },
-  props: {
-    categories: {
-      type: Array
-    }
+  props: {// categories: {
+    //     type: Array
+    // }
   },
-  created: function created() {},
+  created: function created() {
+    this.getCategories();
+  },
   components: {
     VLazyImage: v_lazy_image__WEBPACK_IMPORTED_MODULE_0___default.a,
     InfiniteLoading: vue_infinite_loading__WEBPACK_IMPORTED_MODULE_1___default.a
@@ -2036,6 +2038,14 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     console.log("Component mounted."); // this.fetchProducts();
   },
   methods: {
+    getCategories: function getCategories() {
+      var _this = this;
+
+      axios.get("/api/categories").then(function (res) {
+        // console.log(res.data.data);
+        _this.categories = res.data.data;
+      });
+    },
     increment: function increment() {
       this.$store.commit("increment");
     },
@@ -2057,16 +2067,16 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       return "#" + slug;
     },
     fetchProducts: function fetchProducts() {
-      var _this = this;
+      var _this2 = this;
 
       axios.get("/api/products").then(function (data) {
         // console.log(data);
-        _this.products = data.data.data;
-        _this.tmpproducts = data.data.data;
+        _this2.products = data.data.data;
+        _this2.tmpproducts = data.data.data;
       });
     },
     infiniteHandler: function infiniteHandler($state) {
-      var _this2 = this;
+      var _this3 = this;
 
       // console.log("handles");
       if (this.queryType == "general") {
@@ -2077,14 +2087,14 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
           }
 
           var products = data.data.data;
-          _this2.nextpage.general++; // console.log(products);
+          _this3.nextpage.general++; // console.log(products);
 
           if (products.length > 0) {
-            var _this2$products, _this2$tmpproducts;
+            var _this3$products, _this3$tmpproducts;
 
-            (_this2$products = _this2.products).push.apply(_this2$products, _toConsumableArray(products));
+            (_this3$products = _this3.products).push.apply(_this3$products, _toConsumableArray(products));
 
-            (_this2$tmpproducts = _this2.tmpproducts).push.apply(_this2$tmpproducts, _toConsumableArray(products));
+            (_this3$tmpproducts = _this3.tmpproducts).push.apply(_this3$tmpproducts, _toConsumableArray(products));
 
             $state.loaded();
           } else {
@@ -2101,12 +2111,12 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
           }
 
           var products = data.data.data;
-          _this2.nextpage.category++; // console.log(products);
+          _this3.nextpage.category++; // console.log(products);
 
           if (products.length > 0) {
-            var _this2$products2;
+            var _this3$products2;
 
-            (_this2$products2 = _this2.products).push.apply(_this2$products2, _toConsumableArray(products));
+            (_this3$products2 = _this3.products).push.apply(_this3$products2, _toConsumableArray(products));
 
             $state.loaded();
           } else {
@@ -2123,12 +2133,12 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
           }
 
           var products = data.data.data;
-          _this2.nextpage.query++; // console.log(products);
+          _this3.nextpage.query++; // console.log(products);
 
           if (products.length > 0) {
-            var _this2$products3;
+            var _this3$products3;
 
-            (_this2$products3 = _this2.products).push.apply(_this2$products3, _toConsumableArray(products));
+            (_this3$products3 = _this3.products).push.apply(_this3$products3, _toConsumableArray(products));
 
             $state.loaded();
           } else {
@@ -2138,7 +2148,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       }
     },
     getProductsByCategory: function getProductsByCategory(cat) {
-      var _this3 = this;
+      var _this4 = this;
 
       this.filterCategory = cat;
       this.active_el = cat;
@@ -2146,12 +2156,12 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       this.queryType = "category";
       axios.get("/api/products?cat=".concat(cat)).then(function (data) {
         // console.log(data);
-        _this3.products = data.data.data;
-        _this3.products.length > 0 ? _this3.nextpage.category = 2 : _this3.nextpage.category = 1; // this.tmpproducts = data.data.data;
+        _this4.products = data.data.data;
+        _this4.products.length > 0 ? _this4.nextpage.category = 2 : _this4.nextpage.category = 1; // this.tmpproducts = data.data.data;
       });
     },
     getProductsByQuery: function getProductsByQuery() {
-      var _this4 = this;
+      var _this5 = this;
 
       this.active_el = "";
 
@@ -2164,8 +2174,8 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       this.filterCategory = "";
       axios.get("/api/products?query=".concat(this.queryString)).then(function (data) {
         // console.log(data);
-        _this4.products = data.data.data;
-        _this4.products.length > 0 ? _this4.nextpage.query = 2 : _this4.nextpage.query = 1; // this.tmpproducts = data.data.data;
+        _this5.products = data.data.data;
+        _this5.products.length > 0 ? _this5.nextpage.query = 2 : _this5.nextpage.query = 1; // this.tmpproducts = data.data.data;
       });
     },
     addToCart: function addToCart(product) {

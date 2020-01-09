@@ -57,7 +57,7 @@
 <!-- End Banner Area -->
 
 <div class="container">
-    <all-products :categories="{{ $categories }}" />
+    <all-products />
 </div>
 {{-- {{ dd($categories)}} --}}
 
