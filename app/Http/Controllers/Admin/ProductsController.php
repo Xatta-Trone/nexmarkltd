@@ -252,7 +252,7 @@ class ProductsController extends Controller
             return $col_to_show;
         })
         ->editColumn('image', function ($product) {
-            return "<img src=".asset('storage/products/'.$product->image)." height='50' width='auto' />";
+            return "<img src=".asset('storage/thumbnail/'.$product->image)." height='50' width='auto' />";
         })
         ->editColumn('admin_id', function ($product) {
             return Admin::find($product->admin_id)->name;

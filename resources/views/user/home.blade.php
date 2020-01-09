@@ -979,7 +979,6 @@
 <div>
     <h4>example</h4>
     <example-component />
-
 </div>
 <!-- End related-product Area -->
 @endsection

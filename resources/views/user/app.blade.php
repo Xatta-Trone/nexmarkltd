@@ -6,13 +6,13 @@
 </head>
 
 <body>
-
-    <!-- Start Header Area -->
-    @include('user.partials.header')
-    @include('user.partials.nav')
-
-    <!-- End Header Area -->
     <div id="app">
+        <!-- Start Header Area -->
+        @include('user.partials.header')
+        @include('user.partials.nav')
+
+        <!-- End Header Area -->
+
         @section('main_content')
         @show
     </div>

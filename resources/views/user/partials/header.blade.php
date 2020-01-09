@@ -51,10 +51,20 @@
                     </ul>
                     @auth
                     <ul class="nav navbar-nav navbar-right">
-                        <li class="nav-item"><a href="#" class="cart"><span class="ti-bag"></span></a></li>
-                        <li class="nav-item">
-                            <button class="search"><span class="lnr lnr-magnifier" id="search"></span></button>
+                        <li class="nav-item"><a href="#" class="cart"><span class="ti-bag"></span>
+                            </a>
+
+
                         </li>
+                        <li class="nav-item">
+                            <cart-label />
+
+
+                        </li>
+
+                        {{-- <li class="nav-item">
+                            <button class="search"><span class="lnr lnr-magnifier" id="search"></span></button>
+                        </li> --}}
                     </ul>
                     @endauth
 
@@ -62,13 +72,13 @@
             </div>
         </nav>
     </div>
-    <div class="search_input" id="search_input_box">
+    {{-- <div class="search_input" id="search_input_box">
         <div class="container">
             <form class="d-flex justify-content-between" method="get" action="{{ route('shop',['query' => 'asd']) }}">
-                <input type="text" class="form-control" name="query" id="search_input" placeholder="Search Here">
-                <button type="submit" class="btn"></button>
-                <span class="lnr lnr-cross" id="close_search" title="Close Search"></span>
-            </form>
-        </div>
+    <input type="text" class="form-control" name="query" id="search_input" placeholder="Search Here">
+    <button type="submit" class="btn"></button>
+    <span class="lnr lnr-cross" id="close_search" title="Close Search"></span>
+    </form>
     </div>
+    </div> --}}
 </header>

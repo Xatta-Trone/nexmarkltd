@@ -20,14 +20,23 @@ Route::get('/old', function () {
     return view('welcome');
 });
 
+
+
 Route::get('/', 'PagesController@home')->name('index');
 Route::get('/shop', 'PagesController@shoppage')->name('shop');
 Route::get('/register', 'PagesController@register')->name('register');
 Route::get('/submitstatus', 'PagesController@submitstatus')->name('submitstatus');
 
+Route::get('/api/products/', 'TempApiController@products')->name('tempapi.products');
+Route::get('/api/categories/', 'TempApiController@allCategories')->name('tempapi.allCategories');
+
+
 Route::group(['namespace' => 'User'], function () {
     Route::post('/storeshopdata', 'ShopController@storeShopInfo')->name('shop.submit');
     Route::post('/validatetradelicense', 'ShopController@validatetradelicense')->name('shop.validatetradelicense');
+    
+    //cart resource
+    Route::resource('carts', 'CartController');
 });
 
 
