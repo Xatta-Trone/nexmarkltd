@@ -10,11 +10,8 @@
                     @keyup="getProductsByQuery"
                     @submit="getProductsByQuery"
                 />
-                <div class="head">Categories {{ count }}</div>
-                <p>
-                    <button @click="increment">+</button>
-                    <button @click="decrement">-</button>
-                </p>
+                <div class="head">Categories</div>
+
                 <ul class="main-categories">
                     <li
                         class="main-nav-list"
@@ -95,7 +92,7 @@
 
                 <div
                     class="col-lg-4 col-md-6"
-                    v-for="product in products"
+                    v-for="product in computedProducts"
                     :key="product.id"
                 >
                     <div class="single-product">
@@ -115,25 +112,103 @@
                                 </span>
 
                                 <h6>{{ Number(product.price).toFixed(2) }}</h6>
+                                <p>{{ product.incart }}</p>
                             </div>
                             <div class="prd-bottom">
-                                <a
+                                <div class="row text-center">
+                                    <div class="col-6">
+                                        <a
+                                            href="#"
+                                            class="product-cart-btn mx-auto"
+                                            @click.prevent="addToCart(product)"
+                                            v-if="!product.incart"
+                                            >Add to cart</a
+                                        >
+                                        <!-- <div
+                                            class="btn-group btn-group-sm"
+                                            @click.prevent=""
+                                            v-if="product.incart"
+                                            role="group"
+                                            aria-label="Basic example"
+                                        >
+                                            <button
+                                                type="button"
+                                                class="btn btn-secondary"
+                                                @click.prevent="
+                                                    addToCart(product)
+                                                "
+                                            >
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                            <button
+                                                type="button"
+                                                class="btn btn-secondary"
+                                            >
+                                                {{ product.currentqty || 0 }} in
+                                                bag
+                                            </button>
+                                            <button
+                                                type="button"
+                                                class="btn btn-secondary"
+                                                @click.prevent="
+                                                    addToCart(product)
+                                                "
+                                            >
+                                                <i class="fa fa-minus"></i>
+                                            </button>
+                                        </div> -->
+                                        <a
+                                            href="#"
+                                            class="product-cart-btn remove mx-auto"
+                                            @click="viewCart"
+                                            v-if="product.incart"
+                                            >view cart</a
+                                        >
+                                    </div>
+                                    <!-- <div class="col-6">
+                                        <a
+                                            href="#"
+                                            class="product-cart-btn mx-auto "
+                                            @click.prevent="addToCart(product)"
+                                            v-if="!product.incart"
+                                            >Add to store</a
+                                        >
+                                        <a
+                                            href="#"
+                                            class="product-cart-btn mx-auto  remove"
+                                            @click.prevent=""
+                                            v-if="product.incart"
+                                            >view store</a
+                                        >
+                                    </div> -->
+                                </div>
+
+                                <!-- <a
                                     @click.prevent="addToCart(product)"
                                     href="#"
                                     class="social-info"
+                                    v-if="!product.incart"
                                 >
                                     <span class="ti-bag"></span>
-                                    <p class="hover-text">add to bag</p>
-                                </a>
-                                <a href="" class="social-info">
-                                    <span class="lnr lnr-heart"></span>
-                                    <p class="hover-text">Favorite</p>
-                                </a>
+                                    <span class="fa fa-shopping-basket"></span>
+                                    <p class="hover-text">add to cart</p>
+                                </a> -->
 
-                                <a href="" class="social-info">
-                                    <span class="lnr lnr-move"></span>
-                                    <p class="hover-text">view more</p>
-                                </a>
+                                <!-- <a
+                                    @click.prevent="addToCart(product)"
+                                    href="#"
+                                    class="social-info"
+                                    v-if="product.incart"
+                                >
+                                    <span class="ti-bag"></span>
+                                    <span class="fa fa-times"></span>
+                                    <p class="hover-text">remove from cart</p>
+                                </a> -->
+                                <!-- <a href="" class="social-info">
+                                   <span class="lnr lnr-heart"></span> 
+                                    <span class="fa fa-heart-o"></span>
+                                    <p class="hover-text">Favorite</p>
+                                </a> -->
                             </div>
                         </div>
                     </div>
@@ -168,15 +243,32 @@ export default {
         };
     },
     computed: {
-        count() {
-            return this.$store.state.count;
+        productsInCart() {
+            return this.$store.getters.cartItems;
+        },
+        computedProducts() {
+            return this.products.map(product => {
+                if (this.productsInCart.length) {
+                    let index = null;
+                    let check = this.productsInCart.some((p, i) => {
+                        if (p.id === product.id) {
+                            index = i;
+                            return true;
+                        }
+                    });
+                    if (check) {
+                        product.incart = true;
+                        product.currentqty = this.productsInCart[index].qty;
+                    } else {
+                        product.incart = false;
+                    }
+                }
+
+                return product;
+            });
         }
     },
-    props: {
-        // categories: {
-        //     type: Array
-        // }
-    },
+    // props: ["token"],
     created: function() {
         this.getCategories();
     },
@@ -331,7 +423,18 @@ export default {
             });
         },
         addToCart(product) {
-            console.log(product);
+            // console.log(product);
+            // product._token = this.token;
+            console.log(this.products.indexOf(product));
+            let index = this.products.indexOf(product);
+            console.log(this.products[index]);
+
+            this.products[index].currentqty++;
+            console.log(this.products[index]);
+            this.$store.dispatch("addToCart", product);
+        },
+        viewCart() {
+            window.location.href = "/cart";
         }
     },
     watch: {
@@ -386,5 +489,23 @@ export default {
 .main-nav-list.active > a,
 .main-nav-list.child.active > a {
     color: #ffba00;
+}
+.product-cart-btn {
+    background: #ffa502;
+    color: #fff;
+    text-transform: uppercase;
+    padding: 5px 8px;
+    font-size: 12px;
+    outline: 1px solid #ffa502;
+    outline-offset: 2px;
+}
+
+.product-cart-btn:hover {
+    color: #fff;
+}
+
+.product-cart-btn.remove {
+    background: #c0392b;
+    outline: 1px solid #c0392b;
 }
 </style>

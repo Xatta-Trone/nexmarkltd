@@ -36,7 +36,19 @@ Route::group(['namespace' => 'User'], function () {
     Route::post('/validatetradelicense', 'ShopController@validatetradelicense')->name('shop.validatetradelicense');
     
     //cart resource
-    Route::resource('carts', 'CartController');
+    // Route::resource('cart', 'CartController');
+    Route::get('cart', 'CartController@index')->name('cart');
+    Route::get('checkout', 'CartController@checkout')->name('checkout');
+    Route::post('checkout', 'CartController@createOrder')->name('createOrder');
+    Route::get('payment/{type}/{id}', 'CartController@payment')->name('payment.show');
+    Route::post('payment/', 'CartController@makePayment')->name('payment.make');
+
+
+    Route::get('currentitem', 'CartController@getCartItemsByShop');
+    Route::post('carts/addnew', 'CartController@setCartItem');
+    Route::post('carts/delete', 'CartController@deletItem');
+
+    Route::post('carts/update', 'CartController@updateCartItem');
 });
 
 

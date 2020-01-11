@@ -1,15 +1,18 @@
 <template>
-    <span>{{ count }}</span>
+    <span class="cart-number"> {{ cartTotal }}</span>
 </template>
 
 <script>
 export default {
     mounted() {
-        console.log("Component mounted.");
+        // console.log("Component mounted.");
     },
     computed: {
-        count() {
-            return this.$store.state.count;
+        // count() {
+        //     return this.$store.state.count;
+        // },
+        cartTotal() {
+            return this.$store.getters.totalCartItem;
         }
     }
 };

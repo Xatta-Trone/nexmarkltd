@@ -51,16 +51,15 @@
                     </ul>
                     @auth
                     <ul class="nav navbar-nav navbar-right">
-                        <li class="nav-item"><a href="#" class="cart"><span class="ti-bag"></span>
+                        <li class="nav-item">
+                            <a href="{{ route('cart') }}" class="cart">
+                                CART <span class="fa fa-shopping-cart"></span>
+                                <cart-label />
                             </a>
 
 
                         </li>
-                        <li class="nav-item">
-                            <cart-label />
 
-
-                        </li>
 
                         {{-- <li class="nav-item">
                             <button class="search"><span class="lnr lnr-magnifier" id="search"></span></button>

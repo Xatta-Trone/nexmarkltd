@@ -29,6 +29,27 @@
 <link rel="stylesheet" href="{{ asset('user_asset/css/magnific-popup.css')}}">
 <link rel="stylesheet" href="{{ asset('user_asset/css/main.css')}}">
 
+<style>
+    .cart {
+        background: #fe8d00;
+        color: #fff !important;
+        padding: 4px 9px;
+    }
+
+    .cart .fa,
+    .cart span {
+        color: #fff !important;
+    }
+
+    span.cart-number {
+        font-size: 15px !important;
+    }
+
+    .fa.fa-shopping-cart {
+        font-size: 15px;
+    }
+</style>
+
 @section('extra_header')
 
 @show
