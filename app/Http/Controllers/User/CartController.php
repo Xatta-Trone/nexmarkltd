@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Model\User\Cart;
+use App\Model\Admin\Order;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Model\Admin\Order;
-use App\Model\User\Cart;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Artisan;
 
 class CartController extends Controller
@@ -114,10 +115,13 @@ class CartController extends Controller
 
     public function getCartItemsByShop()
     {
-        $items = Cart::where('shop_id', auth()->user()->shop_id)->get();
-        return $items->map(function ($item) {
-            return json_decode($item->item);
-        });
+        if (Auth::check()) {
+            $items = Cart::where('shop_id', auth()->user()->shop_id)->get();
+            return $items->map(function ($item) {
+                return json_decode($item->item);
+            });
+        }
+        return [];
     }
 
     public function deletItem()

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Model\Admin\Product;
 use Illuminate\Http\Request;
 use App\Model\Admin\Category;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Input;
 
 class PagesController extends Controller
@@ -56,5 +58,35 @@ class PagesController extends Controller
         
         // dd($products->toArray());
         return view('user.shop');
+    }
+
+    
+    public function customPasswordChange(Request $request)
+    {
+        // return $request->all();
+        $message = [];
+        $old_password = $request->old_password;
+ 
+ 
+        if (!(Hash::check($old_password, Auth::user()->password))) {
+            $message['message'] = 'old password do not match';
+            $message['success'] = 'false';
+            return $message;
+        }
+ 
+        if (strcmp($request->get('old_password'), $request->get('new_password')) == 0) {
+            //Current password and new password are same
+            $message['message'] = 'new password can not be same as old password';
+            $message['success'] = 'false';
+            return $message;
+        }
+ 
+        $user = Auth::user();
+        $user->password = bcrypt($request->get('new_password'));
+        $user->save();
+        $message['message'] = 'password changed successfully.';
+        $message['success'] = 'true';
+ 
+        return $message;
     }
 }

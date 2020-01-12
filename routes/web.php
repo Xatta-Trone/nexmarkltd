@@ -26,6 +26,8 @@ Route::get('/', 'PagesController@home')->name('index');
 Route::get('/shop', 'PagesController@shoppage')->name('shop');
 Route::get('/register', 'PagesController@register')->name('register');
 Route::get('/submitstatus', 'PagesController@submitstatus')->name('submitstatus');
+Route::post('/custonpasschange', 'PagesController@customPasswordChange')->name('custonpasschange');
+
 
 Route::get('/api/products/', 'TempApiController@products')->name('tempapi.products');
 Route::get('/api/categories/', 'TempApiController@allCategories')->name('tempapi.allCategories');
@@ -49,6 +51,9 @@ Route::group(['namespace' => 'User'], function () {
     Route::post('carts/delete', 'CartController@deletItem');
 
     Route::post('carts/update', 'CartController@updateCartItem');
+
+    //orders
+    Route::get('/orders/currentuser', 'OrderController@orders')->name('oders.currentuser');
 });
 
 

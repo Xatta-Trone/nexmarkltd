@@ -26,6 +26,10 @@ Vue.component(
 Vue.component("all-products", require("./components/AllProducts.vue").default);
 Vue.component("cart-label", require("./components/CartLabel.vue").default);
 Vue.component("user-cart", require("./components/UserCart.vue").default);
+Vue.component(
+    "order-component",
+    require("./components/OrderComponent.vue").default
+);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
