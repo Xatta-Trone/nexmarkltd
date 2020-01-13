@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Model\Admin\Shop;
 use App\Model\Admin\Admin;
-use App\Model\Admin\Product;
+use App\Model\Admin\Order;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use LaravelDaily\Invoices\Classes\Party;
 use Yajra\DataTables\Facades\DataTables;
+use LaravelDaily\Invoices\Facades\Invoice;
+use LaravelDaily\Invoices\Classes\InvoiceItem;
 
 class OrderController extends Controller
 {
@@ -27,7 +30,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //
+        return view('admin.orders.index');
     }
 
     /**
@@ -38,8 +41,8 @@ class OrderController extends Controller
     public function create()
     {
         $shops = Shop::where('status', 1)->get();
-        $products = Product::select(['id','name','price','slug'])->where('status', 1)->get();
-        return view('admin.orders.add', compact('shops', 'products'));
+        $orders = Order::select(['id','name','price','slug'])->where('status', 1)->get();
+        return view('admin.orders.add', compact('shops', 'orders'));
     }
 
     /**
@@ -72,7 +75,9 @@ class OrderController extends Controller
      */
     public function edit($id)
     {
-        //
+        $order = Order::find($id);
+        $order->items = explode('|', $order->items) ;
+        return view('admin.orders.edit', compact('order'));
     }
 
     /**
@@ -100,55 +105,171 @@ class OrderController extends Controller
 
     public function ajaxDataTable()
     {
-        $products = Product::query();
+        $orders = Order::query();
 
-        return DataTables::of($products)
-        ->addColumn('action', function ($product) {
+        return DataTables::of($orders)
+        ->addColumn('action', function ($order) {
             $col_to_show = '';
             
-            $col_to_show .= '  <a href="'.route('products.edit', $product->id).'" class="btn btn-primary"><i class="fa fa-pencil"></i></a>';
+            $col_to_show .= '  <a href="'.route('orders.edit', $order->id).'" class="btn btn-primary"><i class="fa fa-pencil"></i></a>';
+            $col_to_show .= '  <a href="'.route('orders.invoice', $order->id).'" class="btn btn-danger"><i class="fa fa-file-pdf-o"></i></a>';
+            $col_to_show .= '  <a onclick="return confirm(\'are you sure ?\')" href="'.route('orders.updateorder', $order->id).'" class="btn btn-info"><i class="fa fa-check"></i></a>';
 
-            // $col_to_show .= '  <a href="'.route('products.edit', $product->id).'" class="btn btn-primary"><i class="fa fa-search-plus"></i></a>';
+            // $col_to_show .= '  <a href="'.route('orders.edit', $order->id).'" class="btn btn-primary"><i class="fa fa-search-plus"></i></a>';
 
-            $col_to_show .= '<a href="#" class="btn btn-primary" id="productViewModal" data-id=' . $product->id .'><i class="fa fa-eye"></i></a>';
+            $col_to_show .= '<a href="#" class="btn btn-primary" id="order$orderViewModal" data-id=' . $order->id .'><i class="fa fa-eye"></i></a>';
             
-            $col_to_show .= '  <a href="#" onclick="if(confirm(\'are you sure ?\')){ event.preventDefault();document.getElementById(\'delete-form-'.$product->id.'\').submit();}else{event.preventDefault();}" class="btn btn-danger"><i class="fa fa-trash-o"></i></a>
-                  <form id="delete-form-'.$product->id.'" action="'.route('products.destroy', $product->id).'" method="post">
+            $col_to_show .= '  <a href="#" onclick="if(confirm(\'are you sure ?\')){ event.preventDefault();document.getElementById(\'delete-form-'.$order->id.'\').submit();}else{event.preventDefault();}" class="btn btn-danger"><i class="fa fa-trash-o"></i></a>
+                  <form id="delete-form-'.$order->id.'" action="'.route('orders.destroy', $order->id).'" method="post">
                     '.csrf_field().'
                     '.method_field('DELETE').'
                   </form>';
             
             return $col_to_show;
         })
-        ->editColumn('image', function ($product) {
-            return "<img src=".asset('storage/products/'.$product->image)." height='50' width='auto' />";
+        ->editColumn('trx_type', function ($order) {
+            $status_col = '';
+            if ($order->trx_type == 'bkash') {
+                $status_col .=  '<span class="label label-primary">BKash</span>';
+            } elseif ($order->trx_type == 'rocket') {
+                $status_col .=  '<span class="label label-info">Rocket</span>';
+            } else {
+                $status_col .=  '<span class="label label-danger">Unknown</span>';
+            }
+            return $status_col;
         })
-        ->editColumn('admin_id', function ($product) {
-            return Admin::find($product->admin_id)->name;
-        })
-        ->editColumn('status', function ($product) {
+        ->editColumn('status', function ($order) {
             // <option value="0" selected>Drafted</option>
             // <option value="1">Published</option>
             // <option value="2">Hidden</option>
             // <option value="3">Custom</option>
             $status_col = '';
-            if ($product->status == 0) {
-                $status_col .=  '<span class="label label-info">Drafted</span>';
-            } elseif ($product->status == 1) {
-                $status_col .=  '<span class="label label-success">Published</span>';
-            } elseif ($product->status == 2) {
-                $status_col .=  '<span class="label label-warning">Hidden</span>';
-            } elseif ($product->status == 3) {
-                $status_col .=  '<span class="label label-default">Custom</span>';
+            // switch ($order->status) {
+            //     case "pending":
+            //         return `<span class="badge badge-pill badge-warning">
+            //                 Pending
+            //             </span>`;
+            //         break;
+            //     case "pending_payment":
+            //         return `<span class="badge badge-pill badge-info">
+            //                 Pending Payment
+            //             </span>`;
+            //         break;
+            //     case "pending_verification":
+            //         return `<span class="badge badge-pill badge-info">
+            //                 Pending Payment verification
+            //             </span>`;
+            //         break;
+            //     case "paid":
+            //         return `<span class="badge badge-pill badge-success">
+            //                 Paid
+            //             </span>`;
+            //         break;
+            //     case "cancelled ":
+            //         return `<span class="badge badge-pill badge-danger">
+            //                 Cancelled
+            //             </span>`;
+            //         break;
+            //     case "delivered ":
+            //         return `<span class="badge badge-pill badge-success">
+            //                 Delivered
+            //             </span>`;
+            //         break;
+            //     default:
+            //         return `<span class="badge badge-pill badge-dark">
+            //                 Pending
+            //             </span>`;
+            //         break;
+            // }
+            if ($order->status == 'pending') {
+                $status_col .=  '<span class="label label-pill label-warning">Pending</span>';
+            } elseif ($order->status == 'pending_payment') {
+                $status_col .=  '<span class="label label-pill label-info">Pending Payment</span>';
+            } elseif ($order->status == 'pending_verification') {
+                $status_col .=  '<span class="label label-pill label-info">Pending Payment verification</span>';
+            } elseif ($order->status == 'paid') {
+                $status_col .=  '<span class="label label-pill label-success">Paid</span>';
+            } elseif ($order->status == 'cancelled') {
+                $status_col .=  '<span class="label label-pill label-danger">Cancelled</span>';
+            } elseif ($order->status == 'delivered') {
+                $status_col .=  '<span class="label label-pill label-success">Delivered</span>';
             } else {
-                $status_col .=  '<span class="label label-danger">Undefined</span>';
+                $status_col .=  '<span class="label label-pill label-dark">Pending</span>';
             }
 
             return $status_col;
         })
-        ->rawColumns(['action','status','image'])
+        ->rawColumns(['action','status','trx_type'])
         
         
         ->make(true);
+    }
+
+    public function updateorder($id)
+    {
+        $order = Order::where('id', $id)->get()->first();
+        $order->update(['status'=>'paid']);
+        // return $order;
+        return redirect(route('orders.index'))->with('success', 'payment updated');
+    }
+
+    public function generateInvoice($id)
+    {
+        $order = Order::where('id', $id)->get()->first();
+        $order->items = explode('|', $order->items);
+        // dd($order->items);
+        $client = new Party([
+            'name'          => 'Roosevelt Lloyd',
+            'phone'         => '(520) 318-9486',
+            'custom_fields' => [
+                'note'        => 'IDDQD',
+                'business id' => '365#GG',
+            ],
+        ]);
+
+        $customer = new Party([
+            'name'          => $order->name,
+            'phone'          => $order->phone,
+            'address'       => $order->shipping_address,
+        ]);
+
+        $items = [];
+
+        foreach ($order->items as $item) {
+            $decoded_item = json_decode($item);
+            $items[] = (new InvoiceItem())->title($decoded_item->name)->pricePerUnit($decoded_item->price)->quantity($decoded_item->qty);
+        }
+        $items[] = (new InvoiceItem())->title('Shipping charge')->pricePerUnit(50)->quantity(1);
+
+        $notes = [
+            $order->note
+        ];
+        $notes = implode("<br>", $notes);
+
+        $invoice = Invoice::make('INVOICE')
+            ->series('NMS')
+            ->sequence($order->id)
+            ->serialNumberFormat('{SERIES}{SEQUENCE}')
+            ->seller($client)
+            ->buyer($customer)
+            ->template('custom')
+            ->date($order->created_at)
+            ->dateFormat('d-m-Y')
+            ->totalAmount($order->total_amount)
+            ->currencyFormat('{VALUE}')
+            ->currencyThousandsSeparator(',')
+            ->currencyDecimalPoint('.')
+            ->filename('order_#'.$order->id)
+            ->addItems($items)
+            ->notes($notes)
+            ->logo(public_path('vendor/invoices/sample-logo.png'));
+        // You can additionally save generated invoice to configured disk
+        // ->save('public');
+            
+        // $link = $invoice->url();
+        // Then send email to party with link
+
+        // And return invoice itself to browser or have a different view
+        return $invoice->stream();
     }
 }

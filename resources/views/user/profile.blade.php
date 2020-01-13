@@ -63,6 +63,11 @@
                     <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
                         aria-controls="profile" aria-selected="false">Account Details</a>
                 </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" id="shop-tab" data-toggle="tab" href="#shop" role="tab" aria-controls="shop"
+                        aria-selected="false">Shop Details</a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab"
                         aria-controls="contact" aria-selected="false">Change password</a>
@@ -74,7 +79,6 @@
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="orders" role="tabpanel" aria-labelledby="oreders-tab">
                     <h2>Orders</h2>
-                    ,
                     <order-component />
                 </div>
                 <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
@@ -84,22 +88,68 @@
                             <form method="POST">
                                 @csrf
                                 <div class="form-group">
-                                    <label for="old_password">Old Password:</label>
-                                    <input type="password" name="old_password" id="old_password"
-                                        placeholder="Old password" class="form-control" required>
+                                    <label for="name">Name:</label>
+                                    <input type="text" name="name" id="name" placeholder="Name" class="form-control"
+                                        value="{{ auth()->user()->name }}" disabled>
                                 </div>
                                 <div class="form-group">
-                                    <label for="new_password">New Password:</label>
-                                    <input type="password" name="new_password" id="new_password"
-                                        placeholder="New password" class="form-control" required>
+                                    <label for="email">Email:</label>
+                                    <input type="email" name="email" id="email" placeholder="email" class="form-control"
+                                        value="{{ auth()->user()->email }}" disabled>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="shop" role="tabpanel" aria-labelledby="shop-tab">
+                    <h2>Shop Info</h2>
+                    <div class="row">
+                        <div class="col-12 col-md-6 mx-auto">
+                            <form method="POST">
+                                @csrf
+                                <div class="form-group">
+                                    <label for="name">Name:</label>
+                                    <input type="text" name="name" id="name" placeholder="Name" class="form-control"
+                                        value="{{ auth()->user()->shop->name }}" disabled>
                                 </div>
                                 <div class="form-group">
-                                    <label for="confirm_pass">Retype New Password:</label>
-                                    <input type="password" name="confirm_pass" id="confirm_pass"
-                                        placeholder="Retype new password" class="form-control" required>
+                                    <label for="email">Email:</label>
+                                    <input type="email" name="email" id="email" placeholder="email" class="form-control"
+                                        value="{{ auth()->user()->shop->email }}" disabled>
                                 </div>
-                                <input style="font-size: 16px;" type="submit" class="genric-btn primary text-uppercase"
-                                    value="Change password" id="submit" disabled="">
+
+
+                                <div class="form-group">
+                                    <label for="trade_lic">Trade License:</label>
+                                    <input type="text" name="trade_lic" id="trade_lic" placeholder="trade_lic"
+                                        class="form-control" value="{{ auth()->user()->shop->trade_license }}" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label for="website_url">Website Url:</label>
+                                    <input type="text" name="website_url" id="website_url" placeholder="website_url"
+                                        class="form-control" value="{{ auth()->user()->shop->website_url }}" disabled>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label for="phone">Phone:</label>
+                                    <input type="text" name="phone" id="phone" placeholder="phone" class="form-control"
+                                        value="{{ auth()->user()->shop->phone }}" disabled>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="addr_1">Address Line 1:</label>
+                                    <input type="text" name="addr_1" id="addr_1" placeholder="addr_1"
+                                        class="form-control" value="{{ auth()->user()->shop->addr_1 }}" disabled>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="addr_2">Address Line 2:</label>
+                                    <input type="text" name="addr_2" id="addr_2" placeholder="addr_2"
+                                        class="form-control" value="{{ auth()->user()->shop->addr_2 }}" disabled>
+                                </div>
+
                             </form>
                         </div>
                     </div>

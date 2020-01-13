@@ -114,6 +114,8 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
     //orders
     Route::resource('orders', 'OrderController');
     Route::get('ordersajax', 'OrderController@ajaxDataTable')->name('orders.ajax');
+    Route::get('updateorder/{id}', 'OrderController@updateorder')->name('orders.updateorder');
+    Route::get('order/invoice/{id}', 'OrderController@generateInvoice')->name('orders.invoice');
 });
 
 
