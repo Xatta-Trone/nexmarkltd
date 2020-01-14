@@ -18,7 +18,7 @@
 <section class="content-header">
     <h1>
         orders
-        <a href="{{ route('orders.create') }}" class="btn btn-success pull-right ">Add New</a>
+        {{-- <a href="{{ route('orders.create') }}" class="btn btn-success pull-right ">Add New</a> --}}
 
     </h1>
 

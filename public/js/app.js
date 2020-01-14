@@ -2514,11 +2514,11 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
           return "<span class=\"badge badge-pill badge-success\">\n                            Paid\n                        </span>";
           break;
 
-        case "cancelled ":
+        case "cancelled":
           return "<span class=\"badge badge-pill badge-danger\">\n                            Cancelled\n                        </span>";
           break;
 
-        case "delivered ":
+        case "delivered":
           return "<span class=\"badge badge-pill badge-success\">\n                            Delivered\n                        </span>";
           break;
 
@@ -4491,8 +4491,8 @@ var render = function() {
                     },
                     [
                       _vm._v(
-                        "\n                        Order #" +
-                          _vm._s(order.id) +
+                        "\n                        Order NMS" +
+                          _vm._s(String("00000" + order.id).slice(-5)) +
                           "\n                        "
                       ),
                       _c(

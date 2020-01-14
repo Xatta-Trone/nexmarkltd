@@ -168,7 +168,7 @@
                 <th scope="col" class="text-center border-0">{{ __('invoices::invoice.units') }}</th>
                 @endif
                 <th scope="col" class="text-center border-0">{{ __('invoices::invoice.quantity') }}</th>
-                <th scope="col" class="text-right border-0">{{ __('invoices::invoice.price') }}</th>
+                <th scope="col" class="text-right border-0">{{ __('invoices::invoice.price') }}(BDT)</th>
                 @if($invoice->hasItemDiscount)
                 <th scope="col" class="text-right border-0">{{ __('invoices::invoice.discount') }}</th>
                 @endif
@@ -246,7 +246,7 @@
                 <td colspan="{{ $invoice->table_columns - 2 }}" class="border-0"></td>
                 <td class="text-right pl-0">{{ __('invoices::invoice.total_amount') }}</td>
                 <td class="text-right pr-0 total-amount">
-                    {{ $invoice->formatCurrency($invoice->total_amount) }}
+                    {{ $invoice->formatCurrency($invoice->total_amount) }} BDT
                 </td>
             </tr>
         </tbody>
@@ -262,7 +262,8 @@
         {{ trans('invoices::invoice.amount_in_words') }}: {{ $invoice->getTotalAmountInWords() }}
     </p>
     <p>
-        {{ trans('invoices::invoice.pay_until') }}: {{ $invoice->getPayUntilDate() }}
+        {{-- {{ trans('invoices::invoice.pay_until') }}: {{ $invoice->getPayUntilDate() }} --}}
+        Thank you & wish you a very good day.
     </p>
 
     <script type="text/php">

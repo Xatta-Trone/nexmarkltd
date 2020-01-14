@@ -114,6 +114,8 @@
             <ul class="treeview-menu">
                 <li><a href="{{ route('orders.index') }}"><i class="fa fa-circle-o"></i>All</a></li>
                 <li><a href="{{ route('orders.create') }}"><i class="fa fa-circle-o"></i> Add</a></li>
+                <li><a href="{{ route('order.setting') }}"><i class="fa fa-circle-o"></i> Settings</a></li>
+
             </ul>
         </li>
 

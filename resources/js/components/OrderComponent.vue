@@ -11,7 +11,7 @@
                             aria-expanded="false"
                             :aria-controls="getcollapse(order.id)"
                         >
-                            Order #{{ order.id }}
+                            Order NMS{{ String("00000" + order.id).slice(-5) }}
                             <span class="badge badge-pill badge-light">
                                 ৳ {{ Number(order.total_amount).toFixed(2) }}
                             </span>
@@ -132,12 +132,12 @@ export default {
                             Paid
                         </span>`;
                     break;
-                case "cancelled ":
+                case "cancelled":
                     return `<span class="badge badge-pill badge-danger">
                             Cancelled
                         </span>`;
                     break;
-                case "delivered ":
+                case "delivered":
                     return `<span class="badge badge-pill badge-success">
                             Delivered
                         </span>`;

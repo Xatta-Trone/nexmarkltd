@@ -6,7 +6,9 @@ use App\Model\Admin\Shop;
 use App\Model\Admin\Admin;
 use App\Model\Admin\Order;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Artisan;
 use LaravelDaily\Invoices\Classes\Party;
 use Yajra\DataTables\Facades\DataTables;
 use LaravelDaily\Invoices\Facades\Invoice;
@@ -40,6 +42,7 @@ class OrderController extends Controller
      */
     public function create()
     {
+        return 'under construction';
         $shops = Shop::where('status', 1)->get();
         $orders = Order::select(['id','name','price','slug'])->where('status', 1)->get();
         return view('admin.orders.add', compact('shops', 'orders'));
@@ -89,7 +92,10 @@ class OrderController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        // return $request->all();
+        $order = Order::find($id);
+        $order->update($request->all());
+        return redirect(route('orders.index'))->with('success', 'order updated');
     }
 
     /**
@@ -100,7 +106,8 @@ class OrderController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $order = Order::find($id)->delete();
+        return redirect(route('orders.index'))->with('success', 'order deleted');
     }
 
     public function ajaxDataTable()
@@ -113,7 +120,9 @@ class OrderController extends Controller
             
             $col_to_show .= '  <a href="'.route('orders.edit', $order->id).'" class="btn btn-primary"><i class="fa fa-pencil"></i></a>';
             $col_to_show .= '  <a href="'.route('orders.invoice', $order->id).'" class="btn btn-danger"><i class="fa fa-file-pdf-o"></i></a>';
-            $col_to_show .= '  <a onclick="return confirm(\'are you sure ?\')" href="'.route('orders.updateorder', $order->id).'" class="btn btn-info"><i class="fa fa-check"></i></a>';
+            if ($order->status == 'pending_verification') {
+                $col_to_show .= '  <a onclick="return confirm(\'are you sure ?\')" href="'.route('orders.updateorder', $order->id).'" class="btn btn-info"><i class="fa fa-check"></i></a>';
+            }
 
             // $col_to_show .= '  <a href="'.route('orders.edit', $order->id).'" class="btn btn-primary"><i class="fa fa-search-plus"></i></a>';
 
@@ -208,7 +217,9 @@ class OrderController extends Controller
     public function updateorder($id)
     {
         $order = Order::where('id', $id)->get()->first();
+        // dd($order);
         $order->update(['status'=>'paid']);
+        Artisan::call('order:paid', ['orderId'=> $id]);
         // return $order;
         return redirect(route('orders.index'))->with('success', 'payment updated');
     }
@@ -216,15 +227,18 @@ class OrderController extends Controller
     public function generateInvoice($id)
     {
         $order = Order::where('id', $id)->get()->first();
+        $settings  = DB::table('order_settings')->where('id', 1)->first();
+
         $order->items = explode('|', $order->items);
         // dd($order->items);
         $client = new Party([
-            'name'          => 'Roosevelt Lloyd',
-            'phone'         => '(520) 318-9486',
+            'name'          => $settings->company_name,
+            'phone'         => $settings->phone,
+            'address'       => $settings->address,
             'custom_fields' => [
-                'note'        => 'IDDQD',
-                'business id' => '365#GG',
+                'email'         => $settings->email,
             ],
+            
         ]);
 
         $customer = new Party([
@@ -239,7 +253,7 @@ class OrderController extends Controller
             $decoded_item = json_decode($item);
             $items[] = (new InvoiceItem())->title($decoded_item->name)->pricePerUnit($decoded_item->price)->quantity($decoded_item->qty);
         }
-        $items[] = (new InvoiceItem())->title('Shipping charge')->pricePerUnit(50)->quantity(1);
+        // $items[] = (new InvoiceItem())->title('Shipping charge')->pricePerUnit(50)->quantity(1);
 
         $notes = [
             $order->note
@@ -262,7 +276,7 @@ class OrderController extends Controller
             ->filename('order_#'.$order->id)
             ->addItems($items)
             ->notes($notes)
-            ->logo(public_path('vendor/invoices/sample-logo.png'));
+            ->logo(public_path('storage/settings/'.$settings->logo));
         // You can additionally save generated invoice to configured disk
         // ->save('public');
             

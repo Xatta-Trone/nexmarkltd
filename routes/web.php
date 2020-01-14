@@ -116,6 +116,9 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin'], function () {
     Route::get('ordersajax', 'OrderController@ajaxDataTable')->name('orders.ajax');
     Route::get('updateorder/{id}', 'OrderController@updateorder')->name('orders.updateorder');
     Route::get('order/invoice/{id}', 'OrderController@generateInvoice')->name('orders.invoice');
+    //order setting
+    Route::get('/order/setting', 'OrderSettingController@view')->name('order.setting');
+    Route::patch('/order/setting', 'OrderSettingController@update')->name('order.setting.update');
 });
 
 

@@ -55,6 +55,8 @@ class CartController extends Controller
         $order->save();
 
         Artisan::call('cart:clear', ['shop_id'=>request()->shop_id]);
+        Artisan::call('order:duepay', ['orderId'=> $order->id]);
+
 
         return redirect(route('payment.show', ['type'=>$order->trx_type,'id'=>base64_encode($order->id)]));
     }

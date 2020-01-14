@@ -92,12 +92,27 @@
                     @endforeach
                 </ul>
 
+                <div class="form-group">
+                    <label>Status</label>
+                    <select class="form-control" name="status">
+                        <option value="pending" {{ $order->status == 'pending' ? 'selected' :''}}>pending</option>
+                        <option value="pending_payment" {{ $order->status == 'pending_payment' ? 'selected' :''}}>
+                            pending_payment</option>
+                        <option value="pending_verification"
+                            {{ $order->status == 'pending_verification' ? 'selected' :''}}>pending_verification</option>
+                        <option value="paid" {{ $order->status == 'paid' ? 'selected' :''}}>paid</option>
+                        <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' :''}}>cancelled</option>
+                        <option value="delivered" {{ $order->status == 'delivered' ? 'selected' :''}}>delivered</option>
+
+                    </select>
+                </div>
+
             </div>
             <!-- /.box-body -->
 
             <div class="box-footer">
                 <button type="submit" class="btn btn-primary"
-                    {{-- onClick="this.form.submit(); this.disabled=true; this.innerText='Submitting....';" --}}>Submit</button>
+                    {{-- onClick="this.form.submit(); this.disabled=true; this.innerText='Submitting....';" --}}>Update</button>
                 <a href="{{ route('orders.index') }}" class="btn btn-danger">canel</a>
             </div>
         </form>

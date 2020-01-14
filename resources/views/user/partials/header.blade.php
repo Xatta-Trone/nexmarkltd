@@ -15,15 +15,19 @@
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
                     <ul class="nav navbar-nav menu_nav ml-auto">
-                        <li class="nav-item active"><a class="nav-link" href="{{ route('index') }}">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{{ route('shop') }}">Shop</a></li>
+                        <li class="nav-item {{ Route::currentRouteNamed('index') ? 'active' : '' }}"><a class="nav-link"
+                                href="{{ route('index') }}">Home</a></li>
+                        <li class="nav-item {{ Route::currentRouteNamed('shop') ? 'active' : '' }}"><a class="nav-link"
+                                href="{{ route('shop') }}">Shop</a></li>
 
                         @guest
-                        <li class="nav-item"><a class="nav-link" href="{{ route('register') }}">Register</a></li>
-                        <li class="nav-item"><a class="nav-link business" href="{{ route('login') }}">Business Login</a>
+                        <li class="nav-item {{ Route::currentRouteNamed('register') ? 'active' : '' }}"><a
+                                class="nav-link" href="{{ route('register') }}">Register</a></li>
+                        <li class="nav-item {{ Route::currentRouteNamed('login') ? 'active' : '' }}"><a
+                                class="nav-link business" href="{{ route('login') }}">Business Login</a>
                         </li>
                         @else
-                        <li class="nav-item dropdown">
+                        <li class="nav-item dropdown {{ Route::currentRouteNamed('home') ? 'active' : '' }}">
                             <a id="navbarDropdown" class="nav-link dropdown-toggle" href="{{ route('home') }}"
                                 role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                 {{ auth()->user()->name }} <span class="caret"></span>
